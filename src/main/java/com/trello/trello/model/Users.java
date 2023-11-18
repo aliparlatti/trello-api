@@ -1,5 +1,7 @@
 package com.trello.trello.model;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 
 import lombok.AllArgsConstructor;
@@ -17,5 +19,5 @@ public class Users {
     public String provider;
     public String username;
     public String email;
-
+    private List<String> projects;
 }

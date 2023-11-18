@@ -1,7 +1,10 @@
 package com.trello.trello.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trello.trello.model.Projects;
+import com.trello.trello.model.Users;
 import com.trello.trello.repository.ProjectRepository;
+import com.trello.trello.repository.UserRepository;
 
 @RestController
 @CrossOrigin
@@ -24,10 +29,28 @@ import com.trello.trello.repository.ProjectRepository;
 public class ProjectController {
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    @GetMapping("/")
-    List<Projects> getAllProject() {
-        return projectRepository.findAll();
+    @GetMapping("/byuser/{id}")
+    List<Projects> getAllProject(@PathVariable String id) {
+        Optional<Users> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            Users user = userOptional.get();
+            if (user.getProjects() != null) {
+                List<String> projectIds = user.getProjects();
+                List<Projects> allProjects = projectRepository.findAll();
+                List<Projects> userProjects = allProjects.stream()
+                        .filter(project -> projectIds.contains(project.getId()))
+                        .collect(Collectors.toList());
+                return userProjects;
+            } else {
+                return Collections.emptyList();
+            }
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @GetMapping("/{id}")
