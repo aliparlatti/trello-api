@@ -1,0 +1,13 @@
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/controller/UserController.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/controller/FileController.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/controller/ProjectController.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/config/CorsConfig.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/controller/IssueController.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/repository/IssueRepository.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/model/Users.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/repository/UserRepository.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/TrelloApplication.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/security/SecurityConfiguration.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/model/Projects.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/model/Issues.java
+/Users/aliparlatti/Projects/SpringBoot/api/trello/src/main/java/com/trello/trello/repository/ProjectRepository.java
