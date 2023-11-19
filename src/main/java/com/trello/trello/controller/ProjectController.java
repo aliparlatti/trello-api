@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,7 @@ import com.trello.trello.model.Projects;
 import com.trello.trello.model.Users;
 import com.trello.trello.repository.ProjectRepository;
 import com.trello.trello.repository.UserRepository;
+import com.trello.trello.security.UserTokenDecoderService;
 
 @RestController
 @CrossOrigin
@@ -31,11 +34,12 @@ public class ProjectController {
     private ProjectRepository projectRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserTokenDecoderService userTokenDecoderService;
 
-    @GetMapping("/byuser/{id}")
-    List<Projects> getAllProject(@PathVariable String id) {
-        Optional<Users> userOptional = userRepository.findById(id);
-
+    @GetMapping("/")
+    List<Projects> getAllProject() {
+        Optional<Users> userOptional = userRepository.findById(userTokenDecoderService.getUserId());
         if (userOptional.isPresent()) {
             Users user = userOptional.get();
             if (user.getProjects() != null) {
@@ -54,7 +58,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    Projects getProject(@PathVariable String id) {
+    Projects getProjectById(@PathVariable String id) {
         return projectRepository.findById(id).orElse(null);
     }
 
@@ -96,8 +100,8 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    String deleteProject(@PathVariable String id) {
+    ResponseEntity<Object> deleteProject(@PathVariable String id) {
         projectRepository.deleteById(id);
-        return id;
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
