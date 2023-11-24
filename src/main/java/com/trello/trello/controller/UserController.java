@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,16 +46,16 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    @PutMapping("/{id}")
-    Users updateUser(@PathVariable String id, @RequestBody Users user) {
-        Users oldUser = userRepository.findById(id).orElse(null);
-        oldUser.setName(user.getName());
-        oldUser.setAvatar(user.getAvatar());
-        oldUser.setProvider(user.getProvider());
-        oldUser.setUsername(user.getUsername());
-        oldUser.setProjects(user.getProjects());
-        return userRepository.save(oldUser);
-    }
+    // @PutMapping("/{id}")
+    // Users updateUser(@PathVariable String id, @RequestBody Users user) {
+    // Users oldUser = userRepository.findById(id).orElse(null);
+    // oldUser.setName(user.getName());
+    // oldUser.setAvatar(user.getAvatar());
+    // oldUser.setProvider(user.getProvider());
+    // oldUser.setUsername(user.getUsername());
+    // oldUser.setProjects(user.getProjects());
+    // return userRepository.save(oldUser);
+    // }
 
     @PatchMapping("/{id}")
     public Users updatePartialUser(@PathVariable String id, @RequestBody Map<String, Object> updates) {
@@ -84,7 +83,12 @@ public class UserController {
             if (updateUser.getProvider() != null) {
                 oldUser.setProvider(updateUser.getProvider());
             }
-
+            if (updateUser.getNotifications() != null) {
+                oldUser.setNotifications(updateUser.getNotifications());
+            }
+            if (updateUser.getMembers() != null) {
+                oldUser.setMembers(updateUser.getMembers());
+            }
             return userRepository.save(oldUser);
         } else {
             throw new RuntimeException("Kullanıcı bulunamadı.");
