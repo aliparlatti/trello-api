@@ -1,7 +1,11 @@
 package com.trello.trello.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trello.trello.model.Users;
 import com.trello.trello.repository.UserRepository;
+import com.trello.trello.security.UserTokenDecoderService;
+import com.trello.trello.service.UserService;
 
 @RestController
 @CrossOrigin
@@ -25,14 +31,51 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    private UserTokenDecoderService userTokenDecoderService;
+
     @GetMapping("/")
     List<Users> getAllUsers() {
-        return userRepository.findAll();
+        String userId = userTokenDecoderService.getUserId();
+        Users user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            List<String> memberIds = user.getMembers();
+
+            List<Users> allUsers = userRepository.findAll();
+
+            List<Users> result = allUsers.stream()
+                    .map(u -> memberIds.contains(u.getId()) ? u
+                            : userService.maskEmails(Collections.singletonList(u)).get(0))
+                    .collect(Collectors.toList());
+
+            return result;
+        }
+        return Collections.emptyList();
     }
 
     @GetMapping("/{id}")
     Users getUser(@PathVariable String id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    @GetMapping("/members/{id}")
+    List<Users> getMembers(@PathVariable String id) {
+        Optional<Users> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            Users user = userOptional.get();
+            List<String> memberIds = user.getMembers();
+            List<Users> members = userRepository.findByIdIn(memberIds);
+            return members;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @PostMapping("/")
@@ -45,17 +88,6 @@ public class UserController {
         }
         return userRepository.save(user);
     }
-
-    // @PutMapping("/{id}")
-    // Users updateUser(@PathVariable String id, @RequestBody Users user) {
-    // Users oldUser = userRepository.findById(id).orElse(null);
-    // oldUser.setName(user.getName());
-    // oldUser.setAvatar(user.getAvatar());
-    // oldUser.setProvider(user.getProvider());
-    // oldUser.setUsername(user.getUsername());
-    // oldUser.setProjects(user.getProjects());
-    // return userRepository.save(oldUser);
-    // }
 
     @PatchMapping("/{id}")
     public Users updatePartialUser(@PathVariable String id, @RequestBody Map<String, Object> updates) {

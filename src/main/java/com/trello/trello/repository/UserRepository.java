@@ -1,5 +1,6 @@
 package com.trello.trello.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -10,5 +11,7 @@ public interface UserRepository extends MongoRepository<Users, String> {
     boolean existsByEmail(String email);
 
     Optional<Users> findByEmail(String email);
+
+    List<Users> findByIdIn(List<String> ids);
 
 }
