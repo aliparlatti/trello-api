@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.trello.trello.security.GoogleTokenVerifier;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +25,11 @@ import java.nio.file.StandardCopyOption;
 @RestController
 @RequestMapping("/uploads")
 public class FileController {
+    private final GoogleTokenVerifier tokenService;
+
+    public FileController(GoogleTokenVerifier tokenService) {
+        this.tokenService = tokenService;
+    }
 
     @PostMapping
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
@@ -41,9 +49,14 @@ public class FileController {
     }
 
     @GetMapping("/{fileName}")
-    public ResponseEntity<Resource> serveFile(@PathVariable String fileName) {
+    public ResponseEntity<Resource> serveFile(@PathVariable String fileName, @RequestParam("token") String token) {
+        if (!tokenService.isValidToken(token)) {
+            return ResponseEntity.status(401).build();
+        }
+
         Path filePath = Path.of("uploads", fileName);
         Resource resource = new FileSystemResource(filePath);
+
         if (resource.exists()) {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
