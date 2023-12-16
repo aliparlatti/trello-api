@@ -12,6 +12,7 @@ import com.trello.trello.security.GoogleTokenVerifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -48,6 +49,7 @@ public class FileController {
         }
     }
 
+    @CrossOrigin
     @GetMapping("/{fileName}")
     public ResponseEntity<Resource> serveFile(@PathVariable String fileName, @RequestParam("token") String token) {
         if (!tokenService.isValidToken(token)) {

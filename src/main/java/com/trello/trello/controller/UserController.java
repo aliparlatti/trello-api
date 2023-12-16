@@ -108,6 +108,9 @@ public class UserController {
             if (updateUser.getProjects() != null) {
                 oldUser.setProjects(updateUser.getProjects());
             }
+            if (updateUser.getAvatar() != null) {
+                oldUser.setAvatar(updateUser.getAvatar());
+            }
 
             if (updateUser.getUsername() != null) {
                 oldUser.setUsername(updateUser.getUsername());
