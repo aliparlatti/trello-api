@@ -21,7 +21,7 @@ public class Issues {
     private ObjectId assignee;
     private Users user;
     private List<Attachment> attachments;
-    private List<Users> members;
+    private List<String> members;
     private Date createdDate;
     private boolean archived;
     private Cover cover;
